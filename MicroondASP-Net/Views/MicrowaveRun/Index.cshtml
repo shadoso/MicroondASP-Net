@@ -1,0 +1,121 @@
+﻿@model MicroondASP_Net.Models.MicrowaveRun
+
+@{
+    var programNames = ViewBag.ProgramNames;
+    var errorMessage = ViewBag.ErrorMessage;
+    var runningMicrowave = ViewBag.RunningMicrowave;
+}
+
+@using (Html.BeginForm("Start", "MicrowaveRun", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.Name);
+    @Html.HiddenFor(model => model.Deletable);
+    @Html.HiddenFor(model => model.Customizable);
+
+    <div class="form-horizontal">
+        <h4>Microondas</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProgramId, "Nome", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.ProgramId, new SelectList(programNames, "Value", "Text"), new { @class = "form-control", onchange = "handleDropdownChange(this.value)" })
+                @Html.ValidationMessageFor(model => model.ProgramId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, "Descrição", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Time, "Tempo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.Customizable)
+                {
+                    @Html.EditorFor(model => model.Time, new { htmlAttributes = new { @class = "form-control" } })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Time, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                }
+                @Html.ValidationMessageFor(model => model.Time, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Power, "Potência", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (Model.Customizable)
+                {
+                    @Html.EditorFor(model => model.Power, new { htmlAttributes = new { @class = "form-control" } })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Power, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                }
+                @Html.ValidationMessageFor(model => model.Power, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Warning, "Aviso!!!", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                    @Html.EditorFor(model => model.Warning, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.Warning, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Symbol, "Símbolo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Symbol, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Symbol, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Iniciar" class="btn btn-default" />
+            </div>
+        </div>
+
+        <div class="col-md-10">
+            <p class="text">@Html.Raw(ViewBag.RunningMicrowave)</p>
+        </div>
+
+        <div class="col-md-10">
+            <p class="text-danger">@Html.Raw(ViewBag.ErrorMessage)</p>
+        </div>
+    </div>
+}
+@using (Html.BeginForm("Pause", "MicrowaveRun", FormMethod.Post))
+{
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Pausar" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Resetar", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    function handleDropdownChange(selectedValue) {
+        var path = '/MicrowaveRun/Index?programIndex=' + selectedValue;
+        window.location.href = path;
+    }
+</script>
